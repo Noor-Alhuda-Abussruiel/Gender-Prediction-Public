@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age & Gender Predictor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="section welcome-section">
+            <div class="welcome-content">
+                <h1 class="welcome-title">Welcome to the Age & Gender Predictor!</h1>
+                <h1 class="welcome-title-ar">مرحباً بك في أداة توقع العمر والجنس!</h1>
+                <p class="description">
+                    This website allows you to upload an image and predict the age and gender of the person in the photo using an advanced deep learning model.
+                    <br>
+                    هذا الموقع يتيح لك رفع صورة وتوقع عمر وجنس الشخص فيها باستخدام نموذج تعلم عميق متقدم.
+                </p>
+                <p class="description">
+                    Our aim is to provide an easy and accurate way to get insights from images. Upload your photo below and see the magic!
+                    <br>
+                    هدفنا هو توفير طريقة سهلة ودقيقة للحصول على رؤى من الصور. قم بتحميل صورتك أدناه وشاهد السحر!
+                </p>
+            </div>
+            <div class="animated-circle circle-1"></div>
+            <div class="animated-circle circle-2"></div>
+        </div>
+
+        <div class="section upload-section-container">
+            <div class="upload-area">
+                <h2>Upload Your Image</h2>
+                <input type="file" id="imageUpload" accept="image/*">
+                <button id="predictButton" class="action-button">Predict</button>
+                <div class="image-preview">
+                    <img id="previewImage" src="" alt="Image Preview">
+                </div>
+                <div class="decorative-circle dec-circle-1"></div>
+                <div class="decorative-circle dec-circle-2"></div>
+            </div>
+        </div>
+
+        <div class="section results-section">
+            <h2>Prediction Results</h2>
+            <div class="current-prediction">
+                <p><strong>Predicted Age:</strong> <span id="ageResult">N/A</span></p>
+                <p><strong>Predicted Gender:</strong> <span id="genderResult">N/A</span></p>
+                <p><strong>Gender Confidence:</strong> <span id="confidenceResult">N/A</span></p>
+            </div>
+
+            <h3>Recent Predictions (Last 10)</h3>
+            <div class="results-table-container">
+                <table id="predictionTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Image</th>
+                            <th>Predicted Age</th>
+                            <th>Predicted Gender</th>
+                            <th>Gender Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // هذا الجزء سنعدله لاحقًا في خطوة منفصلة
+        const imageUpload = document.getElementById('imageUpload');
+        const previewImage = document.getElementById('previewImage');
+        const predictButton = document.getElementById('predictButton');
+        const ageResult = document.getElementById('ageResult');
+        const genderResult = document.getElementById('genderResult');
+        const confidenceResult = document.getElementById('confidenceResult');
+        const predictionTableBody = document.querySelector('#predictionTable tbody');
+
+        let selectedFile = null;
+        let predictionHistory = []; // لتخزين آخر 10 نتائج
+
+        imageUpload.addEventListener('change', function(event) {
+            selectedFile = event.target.files[0];
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(selectedFile);
+            } else {
+                previewImage.src = '';
+                previewImage.style.display = 'none';
+            }
+        });
+
+        predictButton.addEventListener('click', async function() {
+            if (!selectedFile) {
+                alert('Please select an image first!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+
+            try {
+                // عنوان الخادم Flask (افتراضياً المنفذ 5000)
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // تحديث النتائج الحالية
+                ageResult.textContent = data.age + ' years';
+                genderResult.textContent = data.gender;
+                confidenceResult.textContent = (data.gender_confidence * 100).toFixed(2) + '%'; // عرض الثقة كنسبة مئوية
+
+                // إضافة النتيجة إلى السجل وعرضها في الجدول
+                const newPrediction = {
+                    imageSrc: previewImage.src, // الصورة التي تم توقعها
+                    age: data.age,
+                    gender: data.gender,
+                    confidence: (data.gender_confidence * 100).toFixed(2) + '%'
+                };
+                predictionHistory.unshift(newPrediction); // أضف للبداية
+                if (predictionHistory.length > 10) {
+                    predictionHistory.pop(); // حافظ على آخر 10 فقط
+                }
+                updatePredictionTable();
+
+            } catch (error) {
+                console.error('Error during prediction:', error);
+                ageResult.textContent = 'Error';
+                genderResult.textContent = 'Error';
+                confidenceResult.textContent = 'Error';
+                alert('Error making prediction: ' + error.message);
+            }
+        });
+
+        function updatePredictionTable() {
+            predictionTableBody.innerHTML = ''; // مسح المحتوى الحالي
+            predictionHistory.forEach((prediction, index) => {
+                const row = predictionTableBody.insertRow();
+                row.insertCell(0).textContent = index + 1; // رقم الترتيب
+                const imgCell = row.insertCell(1);
+                const img = document.createElement('img');
+                img.src = prediction.imageSrc;
+                img.style.maxWidth = '50px'; // حجم صغير للمعاينه في الجدول
+                img.style.maxHeight = '50px';
+                img.style.borderRadius = '5px';
+                imgCell.appendChild(img);
+                row.insertCell(2).textContent = prediction.age + ' years';
+                row.insertCell(3).textContent = prediction.gender;
+                row.insertCell(4).textContent = prediction.confidence;
+            });
+        }
+    </script>
+</body>
+</html>

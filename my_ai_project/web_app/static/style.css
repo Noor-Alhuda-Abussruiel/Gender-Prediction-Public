@@ -1,0 +1,341 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+body {
+    font-family: 'Cairo', sans-serif; /* استخدام خط عربي/إنجليزي جميل */
+    margin: 0;
+    min-height: 100vh;
+    background-color: #f0f2f5; /* لون رمادي فاتح جداً كخلفية عامة */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* تبدأ من الأعلى */
+    padding: 30px 0; /* مسافة من الأعلى والأسفل */
+    overflow-x: hidden; /* لمنع شريط التمرير الأفقي بسبب الأشكال المتحركة */
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column; /* الأقسام فوق بعضها */
+    gap: 30px; /* مسافة بين المستطيلات */
+    width: 90%;
+    max-width: 900px;
+}
+
+.section {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative; /* لتحديد موقع العناصر المطلقة بداخلها */
+    overflow: hidden; /* لإخفاء الأشكال الزائدة عن الحاوية */
+}
+
+/* --- قسم الترحيب الأول --- */
+.welcome-section {
+    background: linear-gradient(135deg, #ADD8E6 0%, #FFB6C1 100%); /* Baby Blue to Baby Pink gradient */
+    color: #333;
+    padding: 60px 40px;
+    position: relative;
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 2; /* لجعل المحتوى فوق الأشكال المتحركة */
+}
+
+.welcome-title, .welcome-title-ar {
+    font-size: 2.8em;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: #2c3e50; /* لون غامق للنصوص لتكون واضحة على الخلفية الفاتحة */
+    transition: transform 0.3s ease-in-out; /* حركة عند الhover */
+}
+
+.welcome-title-ar {
+    font-size: 2.5em; /* حجم أصغر قليلاً للعربي ليتناسب */
+}
+
+.welcome-title:hover, .welcome-title-ar:hover {
+    transform: scale(1.03); /* تكبير طفيف عند وضع السهم */
+}
+
+.description {
+    font-size: 1.2em;
+    line-height: 1.6;
+    color: #555;
+    max-width: 700px;
+    margin: 0 auto 20px auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+.description:hover {
+    transform: translateY(-3px); /* حركة رفع طفيفة عند وضع السهم */
+}
+
+
+/* الأشكال المتحركة في قسم الترحيب */
+.animated-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.6;
+    filter: blur(10px); /* تأثير ضبابي */
+}
+
+.circle-1 {
+    width: 150px;
+    height: 150px;
+    background-color: rgba(255, 255, 255, 0.5); /* أبيض شفاف */
+    top: 20%;
+    left: -5%;
+    animation: moveCircle1 10s infinite alternate ease-in-out;
+}
+
+.circle-2 {
+    width: 100px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, 0.4);
+    bottom: 10%;
+    right: -5%;
+    animation: moveCircle2 12s infinite alternate-reverse ease-in-out;
+}
+
+@keyframes moveCircle1 {
+    from { transform: translate(0, 0); }
+    to { transform: translate(50px, 50px); }
+}
+
+@keyframes moveCircle2 {
+    from { transform: translate(0, 0); }
+    to { transform: translate(-40px, -40px); }
+}
+
+
+/* --- قسم إدخال الصورة الثاني --- */
+.upload-section-container {
+    background-color: #fdfdfd; /* أبيض ناصع قليلاً */
+    padding: 50px 40px;
+    position: relative;
+}
+
+.upload-area {
+    position: relative;
+    z-index: 2;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.upload-area h2 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+input[type="file"] {
+    display: block;
+    width: calc(100% - 20px); /* لتأخذ عرض الحاوية مع بعض المسافة */
+    padding: 12px;
+    margin: 0 auto 20px auto;
+    border: 2px dashed #B0C4DE; /* Baby Blue فاتح كحدود منقطة */
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.05em;
+    color: #555;
+    background-color: #f8f8f8;
+    transition: border-color 0.3s ease;
+}
+
+input[type="file"]:hover {
+    border-color: #87CEEB; /* Baby Blue أغمق قليلاً عند التفاعل */
+}
+
+.action-button {
+    background-color: #FF69B4; /* Hot Pink لزر التنبؤ */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(255, 105, 180, 0.4);
+}
+
+.action-button:hover {
+    background-color: #E0509B; /* درجة أغمق عند التفاعل */
+    transform: translateY(-3px); /* حركة رفع طفيفة */
+}
+
+.image-preview {
+    margin-top: 25px;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 5px;
+    min-height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fefefe;
+}
+
+#previewImage {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 4px;
+    display: none;
+}
+
+/* دوائر الزينة حول منطقة الرفع */
+.decorative-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.3;
+    filter: blur(8px);
+    background-color: #ADD8E6; /* Baby Blue */
+    animation: floatUpDown 6s infinite ease-in-out alternate;
+}
+
+.dec-circle-1 {
+    width: 70px;
+    height: 70px;
+    top: 10%;
+    left: -3%;
+    animation-duration: 7s;
+    background-color: #FFB6C1; /* Baby Pink */
+}
+
+.dec-circle-2 {
+    width: 90px;
+    height: 90px;
+    bottom: 15%;
+    right: -5%;
+    animation-duration: 8s;
+}
+
+@keyframes floatUpDown {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0); }
+}
+
+
+/* --- قسم النتائج الثالث --- */
+.results-section {
+    background-color: #fdfdfd; /* خلفية بيضاء */
+    padding: 40px;
+}
+
+.results-section h2 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.current-prediction {
+    background-color: #e6f7ff; /* خلفية أزرق فاتح جداً */
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: inline-block; /* لكي لا يأخذ عرض 100% */
+    min-width: 250px;
+}
+
+.current-prediction p {
+    margin: 8px 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.current-prediction strong {
+    color: #007bff; /* أزرق داكن قليلاً للعناوين */
+}
+
+/* تنسيق الجدول */
+.results-section h3 {
+    font-size: 1.5em;
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.results-table-container {
+    overflow-x: auto; /* لجعل الجدول قابل للتمرير أفقياً إذا كان عريضاً */
+    max-width: 100%;
+}
+
+#predictionTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    overflow: hidden; /* لضمان تطبيق border-radius على الزوايا */
+}
+
+#predictionTable th,
+#predictionTable td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0; /* حدود فاتحة */
+    text-align: left;
+    font-size: 0.95em;
+    color: #444;
+}
+
+#predictionTable th {
+    background-color: #f8f8f8; /* خلفية رأس الجدول */
+    font-weight: bold;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#predictionTable tbody tr:last-child td {
+    border-bottom: none; /* إزالة الحدود من آخر صف */
+}
+
+#predictionTable tbody tr:nth-child(even) {
+    background-color: #fbfbfb; /* لون فاتح للصفوف الزوجية */
+}
+
+#predictionTable img {
+    max-width: 60px;
+    max-height: 60px;
+    border-radius: 5px;
+    object-fit: cover; /* للحفاظ على نسبة العرض إلى الارتفاع */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .welcome-title, .welcome-title-ar {
+        font-size: 2em;
+    }
+    .description {
+        font-size: 1em;
+    }
+    .section {
+        padding: 30px 20px;
+    }
+    .upload-area {
+        padding: 20px;
+    }
+    .action-button {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+    #predictionTable th,
+    #predictionTable td {
+        padding: 8px 10px;
+        font-size: 0.85em;
+    }
+    #predictionTable img {
+        max-width: 40px;
+        max-height: 40px;
+    }
+}
